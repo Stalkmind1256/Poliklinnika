@@ -33,32 +33,14 @@ if ($result) {
     }
 }
 
-$dgn = array();
-$query = "SELECT id, name, discription FROM public.diagnosis";
-$result = pg_query($conn, $query);
-if ($result) {
-    while ($row = pg_fetch_assoc($result)) {
-        $dgn[$row['id']] = array($row['id'], $row['discription']);
-    }
-}
-
-
 
 //Добавление в таблицу данных из выпадающих списков
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    if(isset($_POST['cancel'])){ // Проверяем, было ли нажатие на кнопку "Отменить"
-        echo "Запись к врачу отменена.";
-    } else {
         $id_patients = $_POST['patient'];
         $id_doctors = $_POST['doctors'];
         $date = strtotime($_POST['date']);
         $time = strtotime($_POST['time']);
-        $id_diagnos = isset($_POST['id_diagnos']);
 
-        foreach($diagn_id as $id_diagnosis) {
-            $query = "INSERT INTO public.appointment(id_patients, id_diagnosis) VALUES ($id_patients, $id_diagnosis)";
-            $result = pg_query($conn, $query);
-        }
 
         $query = "INSERT INTO public.appointment(id_patients, id_doctors, date, time) VALUES ($id_patients, $id_doctors,to_timestamp($date), to_timestamp($time))";
 
@@ -70,7 +52,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             echo "Данные успешно добавлены.";
         }
     }
-}
+
 
 pg_close($conn);
 ?>
@@ -110,20 +92,7 @@ pg_close($conn);
                 }
                 ?>
             </select>
-        </div>
-
-        <div class="input_dgn">
-            <label for="client">Диагноз:</label>
-            <select multiple name="diagnosis" id="diagnosis"  required>
-                <?php //Вывод уже готовых клиентов
-                foreach ($dgn as $id => $name) {
-                    echo "<option value=\"" . $id . "\">".$name[0]. "</option>";
-                }
-                ?>
-            </select>
-        </div>       
-
-
+        </div>    
 
         <div class="input_time">
             <label for="time">Время:</label>
